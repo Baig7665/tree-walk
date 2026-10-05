@@ -25,3 +25,10 @@ Filesystem APIs return entries in arbitrary order, and many tree walkers either 
 ## Edge cases
 
 Directories themselves are never yielded as `WalkEntry` objects; use the `on_enter` callback to observe them. Symbolic links are not followed, and a symlink to a directory is treated as a regular file. Raising `Prune` from `on_enter` skips that directory and all of its descendants without affecting its siblings.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
